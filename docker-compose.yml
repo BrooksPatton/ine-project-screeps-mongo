@@ -1,0 +1,37 @@
+version: "3"
+services:
+  screeps:
+    build: .
+    ports:
+      - "21025:21025"
+    networks:
+      screeps-mongo:
+        ipv4_address: 172.20.0.4
+    depends_on:
+      - mongo
+      - redis
+  mongo:
+    image: mongo:latest
+    networks:
+      screeps-mongo:
+        ipv4_address: 172.20.0.3
+    volumes:
+      - screeps-mongo:/data/db
+  redis:
+    image: redis:latest
+    networks:
+      screeps-mongo:
+        ipv4_address: 172.20.0.2
+    volumes:
+      - screeps-redis:/data
+networks:
+  screeps-mongo:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/24
+volumes:
+  screeps-mongo:
+  screeps-redis:
+
